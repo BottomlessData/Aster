@@ -5,6 +5,7 @@ import shoppingBagFill from '@iconify/icons-eva/shopping-bag-fill';
 import fileTextFill from '@iconify/icons-eva/file-text-fill';
 import lockFill from '@iconify/icons-eva/lock-fill';
 import personAddFill from '@iconify/icons-eva/person-add-fill';
+import dataMatrixScan from '@iconify/icons-mdi/data-matrix-scan';
 import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
 
 // ----------------------------------------------------------------------
@@ -12,6 +13,11 @@ import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
 const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [
+  {
+    title: 'Data Labeling',
+    path: '/dashboard/datalabel',
+    icon: getIcon(dataMatrixScan)
+  },
   {
     title: 'dashboard',
     path: '/dashboard/app',
