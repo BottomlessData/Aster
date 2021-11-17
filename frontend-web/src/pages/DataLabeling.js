@@ -21,6 +21,7 @@ import {
   TablePagination
 } from '@mui/material';
 // components
+import CreateNewTask from '../components/DataLabel/newtask';
 import Page from '../components/Page';
 import Label from '../components/Label';
 import Scrollbar from '../components/Scrollbar';
@@ -143,14 +144,7 @@ export default function DataLabeling() {
           <Typography variant="h4" gutterBottom>
             Task
           </Typography>
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="#"
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Task
-          </Button>
+          <CreateNewTask />
         </Stack>
 
         <Card>
