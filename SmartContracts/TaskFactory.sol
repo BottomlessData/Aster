@@ -34,12 +34,12 @@ contract TaskFactory{
 //------------HELPER FUNCTIONS------------------------
 
 
-    function getAddress(uint _id) public returns(address){
+    function getAddress(uint _id) public view returns(address){
         // require(manager == msg.sender, "TaskFactory: permission denied.");
         return tasks[_id];
     }
 
-    function getNumDeployedTasks() public returns(uint){
+    function getNumDeployedTasks() public view returns(uint){
         // require(manager == msg.sender, "TaskFactory: permission denied.");
         return tasks.length;
     }
