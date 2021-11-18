@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 const getTaskDescription = (task) => {
     let data = task.data()
     return {
+        id: task.id,
         name: data.name,
         description: data.description,
         total_price: data.total_price,
