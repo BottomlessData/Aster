@@ -36,6 +36,43 @@ app.get('/task/:task_id', async (req, res) => {
         })
 })
 
+app.get('/tasks', async (req, res) => {
+    db.collection('tasks')
+        .get()
+        .then(snapshot => {
+            const tasks = []
+            snapshot.forEach(doc => {
+                let data = doc.data()
+                tasks.push({
+                    name: data.name,
+                    description: data.description,
+                    total_price: data.total_price,
+                    number_of_labelers: data.number_of_labelers,
+                })
+            })
+            res.send(JSON.stringify(tasks))
+        })
+        .catch(err => {
+            console.log('Error getting documents', err)
+            res.send(JSON.stringify(err))
+        })
+})
+
+app.get('/task/:task_id/:user_id', async (req, res) => {
+    db.collection('tasks')
+        .doc(req.params.task_id)
+        .get()
+        .then(doc => {
+            let d = doc.data().dataset
+            // TODO FIXME this is returning all data for now!
+            res.send(JSON.stringify(d))
+        }).catch(err => {
+            console.log('Error getting document', err)
+            res.send(JSON.stringify(err))
+        })
+})
+
+
 // Create a task
 app.post('/task', async (req, res) => {
     let data = req.body
