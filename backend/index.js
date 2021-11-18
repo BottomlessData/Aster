@@ -30,10 +30,12 @@ const getTaskDescription = (task) => {
         description: data.description,
         total_price: data.total_price,
         number_of_labelers: data.number_of_labelers,
+        contract_id: data.contract_address,
     }
 }
 
 app.get('/task/:task_id', async (req, res) => {
+    console.log('Fetching individual task')
     db.collection('tasks')
         .doc(req.params.task_id)
         .get()
@@ -67,7 +69,8 @@ app.get('/tasks', async (req, res) => {
         })
 })
 
-app.get('/task/:task_id/:user_id', async (req, res) => {
+app.get('/task/data/:task_id/:user_id', async (req, res) => {
+    console.log('Getting individual data entries')
     db.collection('tasks')
         .doc(req.params.task_id)
         .get()
@@ -81,6 +84,29 @@ app.get('/task/:task_id/:user_id', async (req, res) => {
         })
 })
 
+app.get('/task/labels/:task_id', async (req, res) => {
+    console.log('Fetching dataset replies')
+    db.collection('tasks')
+        .doc(req.params.task_id)
+        .collection('submissions')
+        .get()
+        .then(doc => {
+            let result = []
+            doc.forEach(submission => {
+                // console.log(submission.data())
+                result.push({
+                    id: submission.id,
+                    replies: submission.data().answers,
+                })
+            })
+
+            res.send(JSON.stringify(result))
+        })
+        .catch(err => {
+            console.log('Error getting documents', err)
+            res.send(JSON.stringify(err))
+        })
+})
 
 // Create a task
 app.post('/task', async (req, res) => {
@@ -114,12 +140,15 @@ app.post('/task', async (req, res) => {
             }
         })
 
+        // TODO call contract to create task
+
         let task = {
             name: name,
             description: description,
             total_price: total_price,
             number_of_labelers: number_of_labelers,
-            labels: labels
+            labels: labels,
+            contract_address: 0,// TODO add contract ID here as 
         }
 
         // Submit the data to the database
@@ -192,8 +221,7 @@ app.post('/task/:task_id/submit', async (req, res) => {
 
 
     let reviewer = req.body.reviewer
-    console.log(reviewer)
-    // TODO add validations here
+    console.log("The wallet id is: ", reviewer)
 
     // Validate task exists
     task = db.collection('tasks')
@@ -204,36 +232,52 @@ app.post('/task/:task_id/submit', async (req, res) => {
                 throw new Error('Task does not exist')
             }
 
-            // Validate if the given indices exist
-            let entries = snapshot.data().dataset
-
-            // TODO is checking the last one enough? Or is this safer?
-            Object.keys(data).forEach(index => {
-                if (!entries[index]) {
-                    throw new Error(`Index ${index} does not exist`)
-                }
-            })
-
-            // Validate if the used labels exist
-            let reviewer_labels = new Set(Object.values(data))
-            let task_labels = new Set(Object.values(snapshot.data().labels))
-
-            reviewer_labels.forEach(label => {
-                if (!task_labels.has(label)) {
-                    throw new Error(`Label ${label} does not exist`)
-                }
-            })
-
-            // Inside collection tasks, in the document task_id, under the submissions label, create a new document with the id reviewer and add this data as the value
-            console.log("Reviewer: ", reviewer)
+            // check if already submitted
             db.collection('tasks')
                 .doc(req.params.task_id)
                 .collection('submissions')
                 .doc(String(reviewer))
-                .set(
-                    { "answers": data }
-                ).then(() => {
-                    res.send(JSON.stringify('Data submitted'))
+                .get()
+                .then(doc => {
+                    if (doc.exists) {
+                        // throw new Error('Reviewer already submitted')
+                        res.send(JSON.stringify('Reviewer already submitted'))
+                        return
+                    }
+
+                    // Validate if the given indices exist
+                    let entries = snapshot.data().dataset
+
+                    Object.keys(data).forEach(index => {
+                        if (!entries[index]) {
+                            throw new Error(`Index ${index} does not exist`)
+                        }
+                    })
+
+                    // Validate if the used labels exist
+                    let reviewer_labels = new Set(Object.values(data))
+                    let task_labels = new Set(Object.values(snapshot.data().labels))
+
+                    reviewer_labels.forEach(label => {
+                        if (!task_labels.has(label)) {
+                            throw new Error(`Label ${label} does not exist`)
+                        }
+                    })
+
+                    // Inside collection tasks, in the document task_id, under the submissions label, create a new document with the id reviewer and add this data as the value
+                    console.log("Reviewer: ", reviewer)
+                    db.collection('tasks')
+                        .doc(req.params.task_id)
+                        .collection('submissions')
+                        .doc(String(reviewer))
+                        .set(
+                            { "answers": data }
+                        ).then(() => {
+                            res.send(JSON.stringify('Data submitted'))
+                        })
+                }).catch(err => {
+                    console.log('Error getting document', err)
+                    res.send(JSON.stringify(err))
                 })
 
         }).catch(err => {
