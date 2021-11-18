@@ -21,14 +21,27 @@ app.get('/', (req, res) => {
     res.send('Hello World!')
 });
 
+const getTaskDescription = (task) => {
+    let data = task.data()
+    return {
+        name: data.name,
+        description: data.description,
+        total_price: data.total_price,
+        number_of_labelers: data.number_of_labelers,
+    }
+}
+
 app.get('/task/:task_id', async (req, res) => {
     db.collection('tasks')
         .doc(req.params.task_id)
         .get()
         .then(doc => {
-            // TODO add validations here
-            console.log(`Obtained a reply: ${JSON.stringify(doc.data())}`)
-            res.send(JSON.stringify(doc.data()))
+            if (!doc.exists || doc === undefined) {
+                // throw new Error('No such task!')
+                res.send("Task does not exist")
+            } else {
+                res.send(JSON.stringify(getTaskDescription(doc)))
+            }
         })
         .catch(err => {
             console.log('Error getting document', err)
@@ -42,13 +55,7 @@ app.get('/tasks', async (req, res) => {
         .then(snapshot => {
             const tasks = []
             snapshot.forEach(doc => {
-                let data = doc.data()
-                tasks.push({
-                    name: data.name,
-                    description: data.description,
-                    total_price: data.total_price,
-                    number_of_labelers: data.number_of_labelers,
-                })
+                tasks.push(getTaskDescription(doc))
             })
             res.send(JSON.stringify(tasks))
         })
