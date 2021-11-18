@@ -2,6 +2,7 @@ const express = require('express')
 const CONFIG = require('./config.json')
 
 const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const { storage } = require('firebase-admin/storage');
 const { getFirestore, Timestamp, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./key.json');
 
@@ -90,8 +91,8 @@ app.post('/task', async (req, res) => {
     // Validate data
     try {
         // alphanumeric name and description
-        name = data.name.match("^[0-9a-zA-Z]+")[0]
-        description = data.name.match("^[0-9a-zA-Z]+")[0]
+        name = data.name.match("^[0-9a-zA-Z\\s]+")[0]
+        description = data.name.match("^[0-9a-zA-Z\\s]+")[0]
         total_price = Number(data.total_price)
         if (isNaN(total_price)) {
             throw new Error('Total price is not a number')
