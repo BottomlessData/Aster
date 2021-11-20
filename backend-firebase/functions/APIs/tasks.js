@@ -1,6 +1,8 @@
-const { db } = require('../util/admin');
+const { admin, db } = require('../util/admin');
 const { firebaseConfig } = require('../util/config');
 const { initializeApp } = require('firebase/app');
+const firebase = require('firebase/app');
+
 
 initializeApp(firebaseConfig);
 
@@ -198,6 +200,58 @@ exports.uploadTaskData = async (req, res) => {
         res.send(JSON.stringify(err))
         return
     }
+}
+
+exports.uploadImage = async (request, response) => {
+    const BusBoy = require('busboy');
+	const path = require('path');
+	const os = require('os');
+	const fs = require('fs');
+	const busboy = new BusBoy({ headers: request.headers });
+
+	let imageFileName;
+	let imageToBeUploaded = {};
+
+	busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+		if (mimetype !== 'image/png' && mimetype !== 'image/jpeg') {
+			return response.status(400).json({ error: 'Wrong file type submited' });
+		}
+		const imageExtension = filename.split('.')[filename.split('.').length - 1];
+        imageFileName = filename;
+		const filePath = path.join(os.tmpdir(), imageFileName);
+		imageToBeUploaded = { filePath, mimetype };
+		file.pipe(fs.createWriteStream(filePath));
+    });
+
+	busboy.on('finish', () => {
+		admin
+			.storage()
+			.bucket()
+			.upload(imageToBeUploaded.filePath, {
+				resumable: false,
+				metadata: {
+					metadata: {
+						contentType: imageToBeUploaded.mimetype
+					}
+				}
+			})
+			.then(() => {
+				const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageFileName}?alt=media`;
+				return db.collection('tasks')
+                    .doc(request.params.task_id)
+                    .update({
+                        dataset: admin.firestore.FieldValue.arrayUnion(imageUrl),
+                    });
+			})
+			.then(() => {
+				return response.json({ message: 'Image uploaded successfully' });
+			})
+			.catch((error) => {
+				console.error(error);
+				return response.status(500).json({ error: error.code });
+			});
+	});
+	busboy.end(request.rawBody);
 }
 
 // POST /task/:task_id/submit

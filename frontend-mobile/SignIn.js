@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './global'
 import { web3, kit } from './root'
 import { Image, StyleSheet, Text, TextInput, Button, View, YellowBox, Pressable } from 'react-native'
-import { Link } from "react-router-native";
 import {   
   requestTxSig,
   waitForSignedTxs,
@@ -14,15 +13,13 @@ import * as Linking from 'expo-linking'
 import CeloDAppKit from './celo-dappkit'
 import Constants from 'expo-constants';
 
-
-
 YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream'])
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#35d07f',
-    paddingTop: Constants.statusBarHeight,
+    // paddingTop: Constants.statusBarHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -30,10 +27,26 @@ const styles = StyleSheet.create({
     marginVertical: 8, 
     fontSize: 20, 
     fontWeight: 'bold'
-  }
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'black',
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
 });
 
-const SignIn = () => {
+const SignIn = ({ navigation }) => {
 
   // Set the defaults for the state
   const [address, setAddress] = useState('Not logged in');
@@ -86,21 +99,19 @@ const SignIn = () => {
 
   return (
     <View style={styles.container}>
+      <Pressable style={styles.button} onPress={()=> login()}>
+        <Text style={styles.text}>{"login"}</Text>
+      </Pressable>
 
-      {/* <CeloDAppKit /> */}
-      <Text style={styles.title}>Login first</Text>
-      <Button title="login()" 
-        onPress={()=> login()} />
       <Text style={styles.title}>Account Info:</Text>
       <Text>Current Account Address:</Text>
       <Text>{address}</Text>
       <Text>Phone number: {phoneNumber}</Text>
       <Text>cUSD Balance: {cUSDBalance}</Text>
-
-      <Pressable>
-        <Link to="/tasklist"> 
-            <Text> enter </Text>
-        </Link>
+      <Text></Text>
+      
+      <Pressable style={styles.button} onPress={() => navigation.navigate('TaskList')}>
+        <Text style={styles.text}>{"see tasklist"}</Text>
       </Pressable>
     </View>
   );
