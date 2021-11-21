@@ -15,9 +15,11 @@ const styles = StyleSheet.create({
   });
 
 
-const TaskList = ({ navigation }) => {
+const TaskList = ({ route, navigation }) => {
     const [activeIndex, setActiveIndex] = useState(0);  
     const [carouselItems, setCarouselItems] = useState([]);
+    const { address } = route.params;
+
 
     const fetchTaskList = async () => {
         const response = await fetch('https://us-central1-aster-38850.cloudfunctions.net/api/tasks');
@@ -32,7 +34,7 @@ const TaskList = ({ navigation }) => {
     const renderItem = ({item,index}) => {
         console.log("current card: ", activeIndex);
         return (
-            <Pressable onPress={() => navigation.navigate('Task', {taskID: item.id})} > 
+            <Pressable onPress={() => navigation.navigate('Task', {taskID: item.id, address: address})} > 
                 <View style={{
                     backgroundColor:'floralwhite',
                     borderRadius: 5,
@@ -41,7 +43,6 @@ const TaskList = ({ navigation }) => {
                     marginLeft: 25,
                     marginRight: 25, }}>
                     
-                    {/* <Image style = {{ width: 50, height: 50 }} source={{ uri: "https://images.unsplash.com/photo-1548041347-390744c58da6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1392&q=80" }}/> */}
                     <Text style={{fontSize: 30}}>{item.name}</Text>
                     <Text>{item.description}</Text>
                     <Text>Pay: {item.total_price / item.number_of_labelers} cUSD</Text>

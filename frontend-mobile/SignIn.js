@@ -18,8 +18,13 @@ YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The pro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#35d07f',
+    backgroundColor: '#ffffff',
     // paddingTop: Constants.statusBarHeight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  insideContainer: {
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -49,9 +54,9 @@ const styles = StyleSheet.create({
 const SignIn = ({ navigation }) => {
 
   // Set the defaults for the state
-  const [address, setAddress] = useState('Not logged in');
-  const [phoneNumber, setPhoneNumber] = useState('Not logged in');
-  const [cUSDBalance, setcUSDBalance] = useState('Not logged in');
+  const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [cUSDBalance, setcUSDBalance] = useState('');
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
 
 
@@ -99,20 +104,28 @@ const SignIn = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={()=> login()}>
-        <Text style={styles.text}>{"login"}</Text>
-      </Pressable>
+      <Image style = {{ width: 350, height: 350 }} source={require("./assets/aster-tp-logo-title.png")}></Image>
 
-      <Text style={styles.title}>Account Info:</Text>
-      <Text>Current Account Address:</Text>
-      <Text>{address}</Text>
-      <Text>Phone number: {phoneNumber}</Text>
-      <Text>cUSD Balance: {cUSDBalance}</Text>
-      <Text></Text>
+      {
+        address == '' ? 
+        <View>
+          <Pressable style={styles.button} onPress={()=> login()}>
+            <Text style={styles.text}>{"login"}</Text>
+          </Pressable>
+        </View>
+        :
+        <View style={styles.insideContainer}> 
+          <Text>Account Address:</Text>
+          <Text>{address}</Text>
+          <Text>Phone number: {phoneNumber}</Text>
+          <Text>cUSD Balance: {cUSDBalance}</Text>
+          <Text></Text>
+          <Pressable style={styles.button} onPress={() => navigation.navigate('TaskList', {address: address})}>
+            <Text style={styles.text}>{"start!"}</Text>
+          </Pressable>
+        </View>
+      }
       
-      <Pressable style={styles.button} onPress={() => navigation.navigate('TaskList')}>
-        <Text style={styles.text}>{"see tasklist"}</Text>
-      </Pressable>
     </View>
   );
   
