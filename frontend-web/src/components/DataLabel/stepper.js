@@ -10,12 +10,13 @@ import { TextField } from '@mui/material';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import UploadImage from './uploadImage';
 
-const steps = ['Task Details', 'Data Type & Upload', 'Price & Payment'];
+const steps = ['Task Details', 'Data Details', 'Data Upload', 'Payment'];
 
 export default function LinearStepper({ createNewTask, cancelTask }) {
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [newFileName, setNewFileName] = useState('');
+  const [activeStep, setActiveStep] = useState(0);
+  const [taskName, setTaskName] = useState('');
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
@@ -35,6 +36,9 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
   return (
     <Box sx={{ width: '100%', paddingLeft: 20, paddingTop: 5, paddingRight: 20 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
+
+
+
         <Step key={steps[0]}>
           <StepLabel>{steps[0]}</StepLabel>
           <StepContent>
@@ -48,7 +52,7 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
                 fullWidth
                 variant="standard"
                 onChange={(e) => {
-                  setNewFileName(e.target.value);
+                  setTaskName(e.target.value);
                 }}
               />
               <TextField
@@ -60,7 +64,7 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
                 fullWidth
                 variant="standard"
                 onChange={(e) => {
-                  setNewFileName(e.target.value);
+                  setTaskName(e.target.value);
                 }}
               />
               <TextField
@@ -72,9 +76,22 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
                 fullWidth
                 variant="standard"
                 onChange={(e) => {
-                  setNewFileName(e.target.value);
+                  setTaskName(e.target.value);
                 }}
               />
+              <TextField
+                autoFocus
+                margin="dense"
+                id="price"
+                label="Total Price"
+                type="text"
+                fullWidth
+                variant="standard"
+                onChange={(e) => {
+                  setTaskName(e.target.value);
+                }}
+              />
+
               <Box
                 sx={{
                   height: 20
@@ -91,20 +108,54 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
             </Box>
           </StepContent>
         </Step>
+
         <Step key={steps[1]}>
           <StepLabel>{steps[1]}</StepLabel>
           <StepContent>
             <Box sx={{ mb: 2 }}>
+              
+              <Typography variant="caption">Data Type</Typography>
               <FormGroup>
-                <FormControlLabel control={<Checkbox />} label="classification" />
-                <FormControlLabel control={<Checkbox />} label="bounding-box annotation" />
+                <FormControlLabel control={<Checkbox defaultChecked />} label="classification" />
+                <FormControlLabel control={<Checkbox disabled />} label="bounding-box annotation (soon)" />
               </FormGroup>
+              
+              <TextField
+                autoFocus
+                margin="dense"
+                id="labels"
+                label="Classification Labels (separated by comma)"
+                type="text"
+                fullWidth
+                variant="standard"
+                onChange={(e) => {
+                  setTaskName(e.target.value);
+                }}
+              />
               <Box
                 sx={{
                   height: 20
                 }}
               />
-              <Button variant="contained"> Upload Data </Button>
+              <div>
+                <Button variant="contained" onClick={handleNext} sx={{ mt: 1, mr: 1 }}>
+                  {activeStep === steps.length - 1 ? 'Finish' : 'Continue'}
+                </Button>
+                <Button disabled={activeStep === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                  Back
+                </Button>
+              </div>
+            </Box>
+          </StepContent>
+        </Step>       
+
+
+
+        <Step key={steps[2]}>
+          <StepLabel>{steps[2]}</StepLabel>
+          <StepContent>
+            <Box sx={{ mb: 2 }}>
+              <UploadImage />
               <Box
                 sx={{
                   height: 20
@@ -121,8 +172,12 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
             </Box>
           </StepContent>
         </Step>
-        <Step key={steps[2]}>
-          <StepLabel>{steps[2]}</StepLabel>
+
+
+
+
+        <Step key={steps[3]}>
+          <StepLabel>{steps[3]}</StepLabel>
           <StepContent>
             <Box sx={{ mb: 2 }}>
               <Button variant="contained"> Connect Celo Wallet </Button>
@@ -130,12 +185,12 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
                 autoFocus
                 margin="dense"
                 id="name"
-                label="Price"
+                label="Total Price"
                 type="text"
                 fullWidth
                 variant="standard"
                 onChange={(e) => {
-                  setNewFileName(e.target.value);
+                  setTaskName(e.target.value);
                 }}
               />
               <Button variant="contained"> Pay </Button>
