@@ -14,6 +14,7 @@ const getTaskDescription = (task) => {
         total_price: data.total_price,
         number_of_labelers: data.number_of_labelers,
         contract_id: data.contract_address,
+        labels: data.labels
     }
 }
 

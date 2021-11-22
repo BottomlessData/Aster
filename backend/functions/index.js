@@ -15,7 +15,10 @@ const {
     uploadImage
 } = require('./APIs/tasks')
 
-
+app.get('/', (req, res) => {
+    res.send('Hello World! This is Aster!')
+});
+ 
 app.get('/task/:task_id', getSingleTask);
 app.get('/tasks', getAllTasks);
 app.get('/task/data/:task_id/:user_id', getUserTask);
