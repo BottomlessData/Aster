@@ -11,7 +11,7 @@ contract Task{
     
     //declare required variables
     address public taskOwner;
-    address payable manager = payable(0x83cB1abd58BAc27DFE9843BcEF6960E0b0EA5Af9);
+    address payable manager = payable(0x8AfD0fdFA2E66D9F01fbe2587f392f362D06809D);//Aster address
     
     uint numLabelers;
     uint numLabelersPaid;
@@ -27,35 +27,35 @@ contract Task{
         TaskId = TID;
         TaskOpen = true;
         numLabelers = nLabelers;
-        //totalAmount = X * 10^18
-        totalAmount = amount * 10**18;
+        totalAmount = amount;
+        rewardPerLabeler = totalAmount / numLabelers;
         numLabelersPaid = 0;
     }
     
-    function fundTask() public payable{
-        require(msg.sender == taskOwner, "Task: Only Task Owner can fund this contract.");
-        require(CELO.balanceOf(msg.sender) >= totalAmount, "Task: insufficient funds.");
-        require(msg.value == totalAmount, "Task: Unmatching funds.");
+    function fundTask(uint256 amount) public payable{
+        amount = amount * 10**18;
+        // require(msg.sender == taskOwner, "Task: Only Task Owner can fund this contract.");
+        require(CELO.balanceOf(msg.sender) >= amount, "Task: insufficient funds.");
+        require(msg.value == amount, "Task: Unmatching funds.");
         
-        feeCalculations();
+        feeCalculations(amount);
     }
     
-    function feeCalculations() private {
-        //5% of total amount is collected as process fees
-        fees = (5 * totalAmount)/100;
+    function feeCalculations(uint256 amount) private {
+        //5% of payment amount is collected as process fees
+        fees = (5 * amount)/100;
         CELO.transfer(manager, fees);
         
         //update totalAmount after paying fees
-        totalAmount = totalAmount - fees;
+        totalAmount = totalAmount + (amount - fees);
         
         //reward per each labeler
         rewardPerLabeler = totalAmount / numLabelers;
     }
 
     
-    function approveSubmission(address payable labeler) public{
+    function submission(address payable labeler) public{
         require(TaskOpen == true, "Task: Task is closed.");
-        require(msg.sender == taskOwner);
         //payLabeler once task owner approves submission
         payLabeler(labeler);
         
@@ -68,11 +68,10 @@ contract Task{
     
     function payLabeler(address payable labeler) private{
         //transfer CELO to labeler
-        CELO.transfer(labeler,rewardPerLabeler);
+        CELO.transfer(labeler, rewardPerLabeler);
         //update totalAmount
         totalAmount = totalAmount - rewardPerLabeler;
     }
-    
 
     
 //------------HELPER FUNCTIONS------------------------
@@ -84,6 +83,11 @@ contract Task{
     
     function getTaskID() public view returns(uint){
         return TaskId;
+    }
+    
+    //get reward per labeler
+    function getRewardPerLabeler() public view returns(uint){
+        return rewardPerLabeler;
     }
     
     function getNumLabelers() public view returns(uint){
@@ -108,7 +112,6 @@ contract Task{
     function getBalance() public view returns(uint256){
         return CELO.balanceOf(msg.sender);
     }
-    
-    
+
 }
 
