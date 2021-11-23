@@ -1,9 +1,11 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+
 // material
 import {
   Card,
@@ -31,9 +33,10 @@ import {
   TaskListToolbar,
   TaskMoreMenu
 } from '../components/_dashboard/datalabel/index';
+import TaskDetails from 'src/components/DataLabel/TaskDetails';
 
 //
-import TASKLIST from '../_mocks_/task';
+// import TASKLIST from '../_mocks_/task';
 
 // ----------------------------------------------------------------------
 
@@ -84,6 +87,28 @@ export default function DataLabeling() {
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [TASKLIST, setTASKLIST] = useState([]);
+
+  const loadTaskList = async () => {
+    const response = await axios('https://us-central1-aster-38850.cloudfunctions.net/api/tasks');
+    const task_list = response.data.map((task) => {
+      return {
+        id: task.id,
+        name: task.name,
+        task:'classification',
+        dataType: 'image',
+        offer: task.total_price + " CELO",
+        status: 'in progress'
+      }
+    });
+
+    setTASKLIST(task_list);
+  };
+
+  useEffect(()=>{
+    loadTaskList();
+  },[]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -210,8 +235,12 @@ export default function DataLabeling() {
                           </TableCell>
 
                           <TableCell align="right">
-                            <TaskMoreMenu />
+                            <TaskDetails task_id={id}/>
                           </TableCell>
+
+                          {/* <TableCell align="right">
+                            <TaskMoreMenu />
+                          </TableCell> */}
                         </TableRow>
                       );
                     })}

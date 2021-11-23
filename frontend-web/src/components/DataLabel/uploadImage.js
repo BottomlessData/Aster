@@ -6,9 +6,10 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
 
 
- 
+
 const UploadImage = ({task_id}) => {
   const [images, setImages] = useState([]);
   const [uploadSuccessful, setUploadSuccessful] = useState(false);
@@ -82,15 +83,19 @@ const UploadImage = ({task_id}) => {
                 }}
               />
             </div>
-            {imageList.map((image, index) => (
-              <div key={index} className="image-item mt-5 mb-5 mr-5">
-                <img style={{width: 165, height: 165}} src={image['data_url']} />
-                <div className="image-item__btn-wrapper">
-                  <button className="btn btn-primary" onClick={() => onImageUpdate(index)}>Update</button>
-                  <button className="btn btn-danger" onClick={() => onImageRemove(index)}>Remove</button>
-                </div>
-              </div>
-              ))}
+            <Grid container spacing={2}>
+                {imageList.map((image, index) => (
+                <Grid item xs={4}>
+                    <div key={index} className="image-item mt-5 mb-5 mr-5">
+                        <img style={{width: 165, height: 165}} src={image['data_url']} />
+                        <div className="image-item__btn-wrapper">
+                        <button className="btn btn-primary" onClick={() => onImageUpdate(index)}>Update</button>
+                        <button className="btn btn-danger" onClick={() => onImageRemove(index)}>Remove</button>
+                        </div>
+                    </div>
+                </Grid>
+                ))}
+            </Grid>
             </div>
           )}
         </ImageUploading>
