@@ -15,3 +15,8 @@ Distributed under the MIT License. See [LICENSE](https://github.com/minimal-ui-k
 ## Contact us
 
 Email Us: support@minimals.cc
+
+
+
+newtask.js -> web3 wrapper, wrapping the component inside stepper.js 
+stepper.js -> celo smart contract interaction 

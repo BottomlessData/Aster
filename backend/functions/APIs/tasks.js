@@ -100,13 +100,14 @@ exports.getTaskLabeledDataset = async (req, res) => {
 exports.createTask = async (req, res) => {
     let data = req.body
 
-    let name, description, total_price, number_of_labelers, labels;
+    let name, description, total_price, number_of_labelers, labels, contract_address;
 
     // Validate data
     try {
         // alphanumeric name and description
         name = data.name.match("^[0-9a-zA-Z\\s]+")[0]
-        description = data.name.match("^[0-9a-zA-Z\\s]+")[0]
+        description = data.description
+        contract_address = data.contract_id.match("^[0-9a-zA-Z\\s]+")[0]
         total_price = Number(data.total_price)
         if (isNaN(total_price)) {
             throw new Error('Total price is not a number')
@@ -136,7 +137,7 @@ exports.createTask = async (req, res) => {
             total_price: total_price,
             number_of_labelers: number_of_labelers,
             labels: labels,
-            contract_address: 0,// TODO add contract ID here as 
+            contract_address: contract_address,// TODO add contract ID here as 
         }
 
         // Submit the data to the database

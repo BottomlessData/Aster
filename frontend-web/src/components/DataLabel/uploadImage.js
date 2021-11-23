@@ -4,13 +4,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 
  
-const UploadImage = () => {
+const UploadImage = ({task_id}) => {
   const [images, setImages] = useState([]);
   const [uploadSuccessful, setUploadSuccessful] = useState(false);
   const maxNumber = 69;
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
   
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
@@ -18,25 +22,26 @@ const UploadImage = () => {
     setImages(imageList);
   };
 
-  const uploadimages = () => {
+  const uploadimages = async () => {
+    setLoading(true);
     for(var i = 0; i < images.length; i++){
         const fd = new FormData();
         //console.log(images[a])
         fd.append('image', images[i]['file']);
     
-        axios.post('https://us-central1-aster-38850.cloudfunctions.net/api/task/PqwzBtc9OPqknRVbJW9f/data', fd, {
+        await axios.post(`https://us-central1-aster-38850.cloudfunctions.net/api/task/${task_id}/data`, fd, {
         headers: {
             'content-type': 'multipart/form-data'
         }
-        }
-        ).then(res=>{
-        console.log("success!!");
-        setImages([]);
-        setUploadSuccessful(true);
         }).catch(error => {
-        console.log(error);
+            console.log(error);
         })
+
+        console.log("success!!");
+        setMessage(`${i+1}/${images.length} uploaded`);
     }
+    setImages([]);
+    setUploadSuccessful(true);
   }
  
   return (
@@ -91,13 +96,19 @@ const UploadImage = () => {
         </ImageUploading>
       </div>
       
-      <Button  variant="contained" onClick={() => uploadimages()}>Submit</Button>
+      <Button onClick={() => uploadimages()}>Submit</Button>
 
       {
           uploadSuccessful ? 
           <p>image upload success!</p>
           :
-          <> </>
+          <> 
+          {loading ? <> 
+            <Typography variant="subtitle1">{message}</Typography>
+            <CircularProgress />
+            </> 
+            : <></>}
+          </>
       }
     </div>
   );

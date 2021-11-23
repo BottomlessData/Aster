@@ -20,6 +20,13 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import LinearStepper from './stepper';
 
+import { Web3ReactProvider } from '@web3-react/core'
+import Web3 from 'web3'
+
+function getLibrary(provider) {
+  return new Web3(provider)
+}
+
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 function CreateNewTask({ write }) {
@@ -61,7 +68,18 @@ function CreateNewTask({ write }) {
           </Toolbar>
         </AppBar>
         <DialogContent>
-          <LinearStepper createNewTask={createNewTask} cancelTask={cancelTask} />
+
+
+
+
+          <Web3ReactProvider getLibrary={getLibrary} >
+            <LinearStepper createNewTask={createNewTask} cancelTask={cancelTask} />
+          </Web3ReactProvider>
+
+
+
+
+
         </DialogContent>
       </Dialog>
     </div>
