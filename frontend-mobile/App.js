@@ -1,13 +1,13 @@
 import React from 'react'
 
 import SignIn from './SignIn';
-import TaskList from './pages/TaskList';
+import TaskList from './TaskList';
+import Task from './Task';
 
 import { Image, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { enableScreens } from 'react-native-screens'; 
-import Task from './pages/Task';
 enableScreens();
 
 const Stack = createNativeStackNavigator();

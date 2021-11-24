@@ -9,6 +9,6 @@
 // awaitWrapper();
 
 
-// export const pay_labeler = (address) => {
+// export const pay_labeler = (user_address, contract_address) => {
 //     let contract = new kit.web3.eth.Contract(ABI, address);
 // }

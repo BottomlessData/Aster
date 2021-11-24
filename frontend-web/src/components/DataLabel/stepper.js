@@ -212,7 +212,9 @@ export default function LinearStepper({ createNewTask, cancelTask }) {
                   newTaskContractAddress ? 
                   <div>
                     <Typography variant="subtitle1">task contract created successfully!</Typography>
-                    <Typography variant="subtitle1">Contract Address: {newTaskContractAddress}</Typography>
+                    <Typography variant="subtitle1">Contract Address:
+                      <a target="_blank" href={`https://alfajores-blockscout.celo-testnet.org/address/${newTaskContractAddress}/transactions`}>{newTaskContractAddress}</a>
+                    </Typography>
                   </div>
                   :
                   <> 

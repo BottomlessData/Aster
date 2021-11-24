@@ -81,7 +81,7 @@ const TaskList = ({ route, navigation }) => {
                                 <Text></Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                                     <Text style={styles.textTag}>Pay: {item.total_price / item.number_of_labelers} CELO</Text>
-                                    <Image style = {{ width: 20, height: 20, margin: 5 }} source={require("../assets/celo-logo-img.png")} />
+                                    <Image style = {{ width: 20, height: 20, margin: 5 }} source={require("./assets/celo-logo-img.png")} />
                                 </View>
                                 <Text></Text>
                                 <Pressable onPress={()=>{Linking.openURL(`https://alfajores-blockscout.celo-testnet.org/address/${item.contract_id}/transactions`)}}>

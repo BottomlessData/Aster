@@ -1,7 +1,6 @@
 const { admin, db } = require('../util/admin');
 const { firebaseConfig } = require('../util/config');
 const { initializeApp } = require('firebase/app');
-const { pay_labeler } = require('../util/contract_interaction');
 
 
 initializeApp(firebaseConfig);
@@ -319,9 +318,7 @@ exports.userSubmitLabeledData = async (req, res) => {
                        .set(
                            { "answers": data }
                        ).then(() => {
-                           // pay labeler
-                           // pay_labeler(reviewer);
-
+                           
                            res.send(JSON.stringify('Data submitted'))
                        })
                     db.collection('tasks')

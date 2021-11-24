@@ -3,6 +3,20 @@ import { Image, StyleSheet, Text, TextInput, Button, View, Pressable, ScrollView
 import Carousel from 'react-native-snap-carousel';
 import Constants from 'expo-constants';
 
+
+import { web3, kit } from './root'
+import {   
+    requestTxSig,
+    waitForSignedTxs,
+    requestAccountAddress,
+    waitForAccountAuth,
+    FeeCurrency
+  } from '@celo/dappkit'
+import { toTxResult } from "@celo/connect"
+import * as Linking from 'expo-linking'
+import { task_contract } from './pages/abi';
+
+
 const styles = StyleSheet.create({
     container: {
       paddingTop: Constants.statusBarHeight,
@@ -93,7 +107,7 @@ const Task = ({ route, navigation }) => {
         const json = await response.json();
         console.log(json);
         if(json == "Data submitted")
-            setMessage("task completed! CELO reward on its way to your wallet!");
+            setMessage("task completed!");
         else
             setMessage("submission failed!");
     };
@@ -109,6 +123,47 @@ const Task = ({ route, navigation }) => {
            }
         });
     };
+
+    const claimReward = async () => {
+        // Check the Celo network ID
+      const networkId = 44787;
+      
+      // Create a new contract instance
+      const TaskContract = new web3.eth.Contract(
+        task_contract.abi, contract_address
+      );
+
+      const requestId = 'claim_reward'
+      const dappName = 'Aster'
+      const callback = Linking.makeUrl('/my/path')
+  
+      // Create a transaction object to update the contract 
+      const txObject = await TaskContract.methods.submission(user_address)
+  
+      // Send a request to the Celo wallet 
+      requestTxSig(
+        kit,
+        [
+          {
+            from: user_address,
+            to: contract_address,
+            tx: txObject,
+            feeCurrency: FeeCurrency.cUSD
+          }
+        ],
+        { requestId, dappName, callback }
+      )
+  
+      // Get the response from the Celo wallet
+      const dappkitResponse = await waitForSignedTxs(requestId)
+      const tx = dappkitResponse.rawTxs[0]
+      
+      // Get the transaction result, once it has been included in the Celo blockchain
+      let result = await toTxResult(kit.web3.eth.sendSignedTransaction(tx)).waitReceipt()
+  
+      console.log(`Task contract update transaction receipt: `, result) 
+      setMessage("reward sent successfully!");
+    }
 
     const renderItem = ({item,index}) => {
         // console.log("current card: ", activeIndex);
@@ -139,7 +194,6 @@ const Task = ({ route, navigation }) => {
     return (
        
         <View style={styles.container}>
-           
             <Carousel
                 layout={"default"}
                 data={carouselItems}
@@ -165,10 +219,20 @@ const Task = ({ route, navigation }) => {
                         textAlign: 'center'
                         }}>
                     {message}</Text>
+                    {
+                        message == "task completed!" ? 
+                        <Pressable style={styles.submitButton} onPress={claimReward}>
+                            <Text style={styles.text}>claim reward</Text>
+                        </Pressable>
+                        : 
+                        <></>
+                    }
                 </View>
                 :
                 <></>
             }
+
+           
           
         </View>
     );
