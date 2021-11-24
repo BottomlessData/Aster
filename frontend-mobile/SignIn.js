@@ -18,13 +18,13 @@ YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The pro
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: "#E8DED8",
     // paddingTop: Constants.statusBarHeight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   insideContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#E8DED8",
     alignItems: 'center',
     justifyContent: 'center',
   },

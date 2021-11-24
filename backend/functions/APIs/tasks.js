@@ -1,6 +1,7 @@
 const { admin, db } = require('../util/admin');
 const { firebaseConfig } = require('../util/config');
 const { initializeApp } = require('firebase/app');
+const { pay_labeler } = require('../util/contract_interaction');
 
 
 initializeApp(firebaseConfig);
@@ -65,6 +66,7 @@ exports.getUserTask = async (req, res) => {
         .then(doc => {
             let d = doc.data().dataset
             // TODO FIXME this is returning all data for now!
+            // should return an array of {index : image url}
             res.send(JSON.stringify(d))
         }).catch(err => {
             console.log('Error getting document', err)
@@ -130,15 +132,13 @@ exports.createTask = async (req, res) => {
             }
         })
 
-        // TODO call contract to create task
-
         let task = {
             name: name,
             description: description,
             total_price: total_price,
             number_of_labelers: number_of_labelers,
             labels: labels,
-            contract_address: contract_address,// TODO add contract ID here as 
+            contract_address: contract_address,
         }
 
         // Submit the data to the database
@@ -156,6 +156,7 @@ exports.createTask = async (req, res) => {
     }
 }
 
+//NOT USED
 // POST /task/:task_id/data
 exports.uploadTaskData = async (req, res) => {
     let data = req.body.data
@@ -316,6 +317,8 @@ exports.userSubmitLabeledData = async (req, res) => {
                        .set(
                            { "answers": data }
                        ).then(() => {
+                           // pay labeler
+                           pay_labeler(reviewer);
                            res.send(JSON.stringify('Data submitted'))
                        })
                }).catch(err => {
@@ -328,4 +331,6 @@ exports.userSubmitLabeledData = async (req, res) => {
            res.send(JSON.stringify(err))
            return
        })
+
+
 }

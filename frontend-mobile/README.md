@@ -13,3 +13,8 @@ Invariant Violation: "main" has not been registered.
 Fix: https://stackoverflow.com/questions/64931250/invariant-violation-tried-to-register-two-views-with-the-same-name-rncsafeareap
 open your app route folder ==> node_modules ==> invariant ==> browser.js
 in browser.js file remove the [if condition code] (line number 28 to 46 )
+
+
+library: 
+react-native-snap-carousel: https://github.com/meliorence/react-native-snap-carousel
+react-navigation-transitions: https://github.com/plmok61/react-navigation-transitions

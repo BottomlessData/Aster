@@ -27,11 +27,14 @@ const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={r
 function TaskDetails({ task_id}) {
   const [showDialog, setShowDialog] = useState(false);
   const [task, setTask] = useState({});
+  const [labels, setLabels] = useState([]);
   const [render, setRender] = useState(false);
 
   const fetchTask = async () => {
-    const response = await axios.get(`https://us-central1-aster-38850.cloudfunctions.net/api/task/${task_id}`);
-    setTask(response.data);
+    const task_response = await axios.get(`https://us-central1-aster-38850.cloudfunctions.net/api/task/${task_id}`);
+    const submission_response = await axios.get(`https://us-central1-aster-38850.cloudfunctions.net/api/task/labels/${task_id}`);
+    setTask(task_response.data);
+    setLabels(submission_response.data);
     setRender(true);
   }
   
@@ -82,7 +85,10 @@ function TaskDetails({ task_id}) {
                 <Box sx={{ height: 30 }} />
                 <Typography variant="h4">Dataset</Typography>
                 <Typography variant="string">Labels: {task.labels.toString()}</Typography>
+                <Box sx={{ height: 3 }} />
+                <Typography variant="string">Labeler Submission: {labels.length}/{task.number_of_labelers}</Typography>
                 <Box sx={{ height: 20 }} />
+                <Typography variant="h6">preview (not finalized)</Typography>
                 <Grid container spacing={2}>
                     {task.dataset.map((image, index) => (
                         <Grid item xs={2} style={{
@@ -93,12 +99,23 @@ function TaskDetails({ task_id}) {
                             <div key={index}>
                                 <img style={{width: 165, height: 165}} src={image} />
                             </div>
-                            <Typography variant="string">label</Typography>
+                            {
+                                labels[0] ? 
+                                <Typography variant="string">{labels[0].replies[index]}</Typography>
+                                :
+                                <></>
+                            }
                         </Grid>
                     ))}
                 </Grid>
                 <Box sx={{ height: 20 }} />
-                <Button variant="contained">download labeled data</Button>
+                {
+                    labels.length != task.number_of_labelers ?
+                    <Button disabled variant="contained">download labeled data</Button>
+                    :
+                    <Button variant="contained">download labeled data</Button>
+                }
+                
 
             </div>
             :

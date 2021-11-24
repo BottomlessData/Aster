@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, Text, TextInput, Button, View, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, Button, View, Pressable, Linking, ScrollView } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import Constants from 'expo-constants';
 
@@ -7,11 +7,40 @@ import Constants from 'expo-constants';
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-    //   paddingTop: Constants.statusBarHeight,
+      paddingTop: Constants.statusBarHeight,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection:'row',
+      paddingTop: 100,
+      backgroundColor: "#E8DED8"
     },
+    textTag: {
+        backgroundColor: "#FFCF00",
+        color: '#ffffff',
+        alignSelf: 'flex-start', // keep background color to text area only
+        padding: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
+        borderRadius: 10, 
+        overflow: 'hidden',
+    },
+    textTag2:{
+        backgroundColor: "#36D07F",
+        color: '#ffffff',
+        alignSelf: 'flex-start', // keep background color to text area only
+        padding: 5,
+        paddingTop: 5,
+        paddingBottom: 5,
+        borderRadius: 10, 
+        overflow: 'hidden',
+    },
+    link:{
+        color: '#228EF7',
+        textDecorationLine: 'underline'
+    },
+    card:{
+        margin: 10,
+    }
   });
 
 
@@ -31,41 +60,41 @@ const TaskList = ({ route, navigation }) => {
         fetchTaskList();
     }, []);
 
-    const renderItem = ({item,index}) => {
-        console.log("current card: ", activeIndex);
-        return (
-            <Pressable onPress={() => navigation.navigate('Task', {taskID: item.id, address: address})} > 
-                <View style={{
-                    backgroundColor:'floralwhite',
-                    borderRadius: 5,
-                    height: 250,
-                    padding: 50,
-                    marginLeft: 25,
-                    marginRight: 25, }}>
-                    
-                    <Text style={{fontSize: 30}}>{item.name}</Text>
-                    <Text>{item.description}</Text>
-                    <Text>Pay: {item.total_price / item.number_of_labelers} cUSD</Text>
-                    <Text>Contract Address: {item.contract_id}</Text>
-                </View> 
-            </Pressable>
-        )
-    }
-
+    
     return (
         <View style={styles.container}>
-            <Carousel
-                layout={"default"}
-                data={carouselItems}
-                sliderWidth={400}
-                itemWidth={300}
-                sliderHeight={1000}
-                itemHeight={300}
-                vertical={true}
-                renderItem={renderItem}
-                onSnapToItem = { index => setActiveIndex(index) }
-                // loop={true} 
-            />
+            <ScrollView>
+                {
+                    carouselItems.map((item, index) => (
+                        <Pressable key={index} style={styles.card} onPress={() => navigation.navigate('Task', {taskID: item.id, user_address: address, contract_address: item.contract_id, labels: item.labels, datasize: item.dataset.length})} > 
+                            <View style={{
+                                backgroundColor:'floralwhite',
+                                borderRadius: 15,
+                                height: 250,
+                                padding: 30,
+                                marginLeft: 25,
+                                marginRight: 25, 
+                                }}>
+                                
+                                <Text style={{fontSize: 30}}>{item.name}</Text>
+                                <Text>{item.description}</Text>
+                                <Text></Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                    <Text style={styles.textTag}>Pay: {item.total_price / item.number_of_labelers} CELO</Text>
+                                    <Image style = {{ width: 20, height: 20, margin: 5 }} source={require("../assets/celo-logo-img.png")} />
+                                </View>
+                                <Text></Text>
+                                <Pressable onPress={()=>{Linking.openURL(`https://alfajores-blockscout.celo-testnet.org/address/${item.contract_id}/transactions`)}}>
+                                    <Text>Contract Address: </Text>
+                                    <Text style={styles.link}>{item.contract_id}</Text>
+                                </Pressable>
+                                <Text></Text>
+                                <Text style={styles.textTag2}>Image Classification</Text>
+                            </View> 
+                        </Pressable>
+                    ))
+                }
+            </ScrollView>
         </View>
     );
 }
