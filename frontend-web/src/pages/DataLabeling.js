@@ -42,9 +42,10 @@ import TaskDetails from 'src/components/DataLabel/TaskDetails';
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'task', label: 'Task', alignRight: false },
-  { id: 'dataType', label: 'Data Type', alignRight: false },
-  { id: 'offer', label: 'Offer', alignRight: false },
+  { id: 'task', label: 'Type', alignRight: false },
+  { id: 'contract', label: 'Contract Address', alignRight: false },
+  { id: 'offer', label: 'Price', alignRight: false },
+  { id: 'progress', label: 'Progress', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' }
 ];
@@ -99,7 +100,10 @@ export default function DataLabeling() {
         task:'classification',
         dataType: 'image',
         offer: task.total_price + " CELO",
-        status: 'in progress'
+        status: 'in progress',
+        contract_address: task.contract_id,
+        number_of_labelers: task.number_of_labelers,
+        number_of_submission: task.number_of_submission
       }
     });
 
@@ -195,7 +199,7 @@ export default function DataLabeling() {
                   {filteredTasks
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => {
-                      const { id, name, task, dataType, offer, status } = row;
+                      const { id, name, task, contract_address, offer, status, number_of_labelers, number_of_submission } = row;
                       const isItemSelected = selected.indexOf(name) !== -1;
 
                       return (
@@ -222,8 +226,13 @@ export default function DataLabeling() {
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{task}</TableCell>
-                          <TableCell align="left">{dataType}</TableCell>
+                          <TableCell align="left">
+                            <a target="_blank" href={`https://alfajores-blockscout.celo-testnet.org/address/${contract_address}/transactions`}>{contract_address}</a>
+                          </TableCell>
                           <TableCell align="left">{offer}</TableCell>
+                          <TableCell align="left">
+                            <Typography variant="string">{number_of_submission}/{number_of_labelers}</Typography>
+                          </TableCell>
                           {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell> */}
                           <TableCell align="left">
                             <Label

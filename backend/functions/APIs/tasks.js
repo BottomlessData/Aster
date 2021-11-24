@@ -16,7 +16,8 @@ const getTaskDescription = (task) => {
         number_of_labelers: data.number_of_labelers,
         contract_id: data.contract_address,
         labels: data.labels,
-        dataset: data.dataset
+        dataset: data.dataset,
+        number_of_submission: data.number_of_submission
     }
 }
 
@@ -139,6 +140,7 @@ exports.createTask = async (req, res) => {
             number_of_labelers: number_of_labelers,
             labels: labels,
             contract_address: contract_address,
+            number_of_submission: 0
         }
 
         // Submit the data to the database
@@ -318,9 +320,15 @@ exports.userSubmitLabeledData = async (req, res) => {
                            { "answers": data }
                        ).then(() => {
                            // pay labeler
-                           pay_labeler(reviewer);
+                           // pay_labeler(reviewer);
+
                            res.send(JSON.stringify('Data submitted'))
                        })
+                    db.collection('tasks')
+                        .doc(req.params.task_id)
+                        .update({
+                            number_of_submission: admin.firestore.FieldValue.increment(1),
+                        });
                }).catch(err => {
                    console.log('Error getting document', err)
                    res.send(JSON.stringify(err))

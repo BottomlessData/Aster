@@ -75,7 +75,9 @@ function TaskDetails({ task_id}) {
                 <Typography variant="h4">Description: {task.description}</Typography>
                 <Box sx={{ height: 10 }} />
                 <Typography variant="subtitle1">ID: {task.id}</Typography>
-                <Typography variant="subtitle1">Contract Address: {task.contract_id}</Typography>
+                <Typography variant="subtitle1">Contract Address:
+                  <a target="_blank" href={`https://alfajores-blockscout.celo-testnet.org/address/${task.contract_id}/transactions`}>{task.contract_id}</a>
+                </Typography>
                 <Box sx={{ height: 20 }} />
                 <Typography variant="string">Total Price: {task.total_price + " CELO"}</Typography>
                 <Box sx={{ height: 3 }} />
