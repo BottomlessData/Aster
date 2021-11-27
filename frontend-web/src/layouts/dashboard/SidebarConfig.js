@@ -7,6 +7,9 @@ import lockFill from '@iconify/icons-eva/lock-fill';
 import personAddFill from '@iconify/icons-eva/person-add-fill';
 import dataMatrixScan from '@iconify/icons-mdi/data-matrix-scan';
 import alertTriangleFill from '@iconify/icons-eva/alert-triangle-fill';
+import accountIcon from '@iconify/icons-mdi/account';
+import formatListBulleted from '@iconify/icons-mdi/format-list-bulleted';
+
 
 // ----------------------------------------------------------------------
 
@@ -19,8 +22,13 @@ const sidebarConfig = [
     icon: getIcon(pieChart2Fill)
   },
   {
-    title: 'Data Labeling',
-    path: '/dashboard/datalabel',
+    title: 'Task List',
+    path: '/dashboard/tasklist',
+    icon: getIcon(formatListBulleted)
+  },
+  {
+    title: 'Micro-Task',
+    path: '/dashboard/microtask',
     icon: getIcon(dataMatrixScan)
   },
 ];
