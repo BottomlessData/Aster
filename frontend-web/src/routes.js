@@ -26,8 +26,8 @@ export default function Router() {
         // { path: 'user', element: <User /> },
         // { path: 'products', element: <Products /> },
         // { path: 'blog', element: <Blog /> },
-        { path: 'tasklist', element: <DataLabeling /> },
-        { path: 'microtask', element: <MicroTask /> }
+        { path: 'mytasks', element: <DataLabeling /> },
+        { path: 'classifytask', element: <MicroTask /> }
       ]
     },
     // {

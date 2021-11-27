@@ -22,13 +22,13 @@ const sidebarConfig = [
     icon: getIcon(pieChart2Fill)
   },
   {
-    title: 'Task List',
-    path: '/dashboard/tasklist',
+    title: 'My Tasks',
+    path: '/dashboard/mytasks',
     icon: getIcon(formatListBulleted)
   },
   {
-    title: 'Micro-Task',
-    path: '/dashboard/microtask',
+    title: 'Classify Task',
+    path: '/dashboard/classifytask',
     icon: getIcon(dataMatrixScan)
   },
 ];

@@ -53,11 +53,11 @@ export default function MicroTask() {
 
 
   return (
-    <Page title="Micro-Task">
+    <Page title="Classify Task">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Micro-Tasks
+            Classify Task
           </Typography>
         </Stack>
 
