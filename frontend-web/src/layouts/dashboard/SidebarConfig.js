@@ -22,7 +22,7 @@ const sidebarConfig = [
     title: 'Data Labeling',
     path: '/dashboard/datalabel',
     icon: getIcon(dataMatrixScan)
-  }
+  },
 ];
 
 export default sidebarConfig;
