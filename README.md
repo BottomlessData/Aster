@@ -23,7 +23,7 @@ Aster is a decentralized and collective micro-task application for data. Aster e
 
 
 ## How we built it
-This project contains both web2.0 and web3.0 technologies. We use Firebase as Aster’s backend to securely store data for clients via NodeJS APIs. We implemented a factory design to allow clients create a new task contract for every data task they want to publish. All payment transactions are through the task smart contracts and are instant. The client server side is a React website application that handles client’s task creations on the Celo blockchain and interacts with Metamask wallets. The labelers, or general users, server side is a React Native mobile application that connects to Valora mobile wallets and handles labelers’ task selection and submission and instant crypto rewards.
+This project contains both web2.0 and web3.0 technologies. We use Firebase as Aster’s backend to securely store data for clients via NodeJS APIs. We implemented a factory design to allow clients create a new task contract for every data task they want to publish. All payment transactions are through the task smart contracts and are instant. The client frontend UI is a React website application that handles client’s task creations on the Celo blockchain and interacts with Metamask wallets. The labelers, or general users, frontend UI is a React Native mobile application that connects to Valora mobile wallets and handles labelers’ task selection and submission and instant crypto rewards.
 
 ![Tech](./imgs/tech.png)
 ![infra](./imgs/infra.png)
